@@ -9,6 +9,7 @@
         <function importPath="fmt" name="Println" />
         <function importPath="fmt" name="Print" />
         <function importPath="os" name="MkdirAll" />
+        <function importPath="os" name="Remove" />
       </functions>
       <methods>
         <method importPath="hash" receiver="Hash" name="Write" />
@@ -25,6 +26,7 @@
         <method importPath="mime/multipart" receiver="File" name="Close" />
         <method importPath="os" receiver="*File" name="Close" />
         <method importPath="github.com/moby/moby/client" receiver="*Client" name="Close" />
+        <method importPath="archive/tar" receiver="*Writer" name="Close" />
       </methods>
     </inspection_tool>
   </profile>

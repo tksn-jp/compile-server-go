@@ -4,9 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/tksn-jp/compile-server-go/pkg"
-	"github.com/tksn-jp/compile-server-go/pkg/auth"
-	"github.com/tksn-jp/compile-server-go/pkg/file"
+	"github.com/tksn-jp/compile-server-go/auth"
+	"github.com/tksn-jp/compile-server-go/docker"
 )
 
 func main() {
@@ -19,12 +18,15 @@ func main() {
 	//}
 	//log.Printf("container builded: %s", id)
 	//docker.StartContainer(id)
+	log.Println("Building docker images...")
+	imageNum := docker.PrepareImage()
 
+	log.Printf("Image: %d\n", imageNum)
 	log.Println("server ready")
 
 	http.HandleFunc("/auth", auth.Login)
-	http.HandleFunc("/compile", file.Compile)
-	http.HandleFunc("/ping", pkg.Ping)
+	http.HandleFunc("/compile", Server)
+	http.HandleFunc("/ping", Ping)
 
 	log.Fatal(http.ListenAndServe(":8888", nil))
 }

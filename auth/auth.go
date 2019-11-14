@@ -32,4 +32,3 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	// data{Id, Pw} を使って認証
 
 }
-
