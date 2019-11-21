@@ -77,9 +77,10 @@ func Server(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	log.Println(out)
+	msg := streamToString(out)
+	log.Println(msg)
 	res.WriteHeader(http.StatusOK)
-	_, _ = res.Write(streamToByte(out))
+	_, _ = res.Write([]byte(msg))
 	return
 }
 
@@ -116,12 +117,12 @@ func CompileRawCode(fileType string, content string) (io.Reader, error) {
 		return nil, err
 	}
 
-	// todo: tar source
+	// tar source
 	cwd, _ := os.Getwd()
 	cwdAbs, _ := filepath.Abs(cwd)
 	tarPath := filepath.Join(cwdAbs, "tar", filepath.Base(saveDir)+".tar")
 	log.Println("tarPath: " + tarPath)
-	if err := enTar(dirWalk(saveDir), tarPath, fileType); err != nil {
+	if err := enTar(dirWalk(saveDir), tarPath); err != nil {
 		log.Printf("error while archiving uploaded files: %s", err)
 		return nil, err
 	}
@@ -146,9 +147,9 @@ func ExecDocker(fileType string, packagePath string) (io.Reader, error) {
 		log.Printf("error while building container: %s", err)
 		return nil, err
 	}
-	//defer docker.RemoveContainer(cli, ctx, resp)
+	defer docker.RemoveContainer(cli, ctx, resp)
 
-	// todo: insert package into container
+	// insert package into container
 	log.Println("debug: Deploying package")
 	err = docker.DeployPackage(cli, ctx, resp, packagePath)
 	if err != nil {
@@ -160,7 +161,7 @@ func ExecDocker(fileType string, packagePath string) (io.Reader, error) {
 	return docker.ExecContainer(cli, ctx, resp)
 }
 
-func enTar(paths []string, tarPath string, fileType string) error {
+func enTar(paths []string, tarPath string) error {
 	w, err := os.OpenFile(tarPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return nil
@@ -168,23 +169,6 @@ func enTar(paths []string, tarPath string, fileType string) error {
 	defer w.Close()
 	tw := tar.NewWriter(w)
 	defer tw.Close()
-	cwd, _ := os.Getwd()
-	body, err := ioutil.ReadFile(filepath.Join(cwd, "dockerFiles", fileType, "script.sh"))
-	if err != nil {
-		log.Println("debug: readfile err")
-		return err
-	}
-	hdr := &tar.Header{
-		Name: "script.sh",
-		Size: int64(len(body)),
-		Mode: 0644,
-	}
-	if err := tw.WriteHeader(hdr); err != nil {
-		return err
-	}
-	if _, err := tw.Write(body); err != nil {
-		return err
-	}
 	for _, fp := range paths {
 		body, err := ioutil.ReadFile(fp)
 		if err != nil {
@@ -215,6 +199,12 @@ func streamToByte(stream io.Reader) []byte {
 	buf := new(bytes.Buffer)
 	_, _ = buf.ReadFrom(stream)
 	return buf.Bytes()
+}
+
+func streamToString(stream io.Reader) string {
+	buf := new(bytes.Buffer)
+	_, _ = buf.ReadFrom(stream)
+	return buf.String()
 }
 
 func dirWalk(dir string) []string {

@@ -1,6 +1,5 @@
 FROM golang:latest
 
-COPY . /go/src
 WORKDIR /go/src
 
-CMD ["sh", "script.sh"]
+CMD go build -ldflags='-w -s' -o app . && ./app
