@@ -1,5 +1,5 @@
-FROM golang:latest
+FROM golang:1.13.4-alpine
 
-WORKDIR /go/src
+WORKDIR /src
 
 CMD go build -ldflags='-w -s' -o app . && ./app

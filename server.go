@@ -24,7 +24,7 @@ func createRawCodeFile(fileType string) (*os.File, string, error) {
 	entryPoint := map[string]string{
 		"golang": "main.go",
 		"c":      "main.c",
-		"java":   "main.java",
+		"java":   "Main.java",
 	}
 	savePrefix, _ := filepath.Abs(UploadFileDir)
 	uploadedDir := fmt.Sprintf("uploaded_%d", time.Now().UnixNano())

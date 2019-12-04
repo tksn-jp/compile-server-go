@@ -29,7 +29,7 @@ func DeployPackage(cli *client.Client, ctx context.Context, resp container.Conta
 	if err != nil {
 		return err
 	}
-	err = cli.CopyToContainer(ctx, resp.ID, "/go/src", f, types.CopyToContainerOptions{})
+	err = cli.CopyToContainer(ctx, resp.ID, "/src", f, types.CopyToContainerOptions{})
 	if err != nil {
 		return err
 	}
