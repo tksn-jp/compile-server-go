@@ -25,7 +25,7 @@ func main() {
 	log.Println("server ready")
 
 	http.HandleFunc("/auth", auth.Login)
-	http.HandleFunc("/compile", Server)
+	http.HandleFunc("/exec", Server)
 	http.HandleFunc("/ping", Ping)
 
 	log.Fatal(http.ListenAndServe(":8888", nil))
