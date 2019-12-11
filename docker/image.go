@@ -6,11 +6,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"unsafe"
 
 	"github.com/docker/docker/api/types"
 	"github.com/moby/moby/client"
 )
+
+var sb strings.Builder
 
 func check(err error) {
 	if err != nil {
@@ -38,10 +41,13 @@ func build(dfPath string) bool {
 
 	cwd, _ := os.Getwd()
 	lang, _ := filepath.Rel(filepath.Join(cwd, "dockerFiles"), filepath.Dir(dockerfile))
-	imageName := "rcs_" + lang
+	sb.Reset()
+	sb.Grow(32)
+	sb.WriteString("rcs_")
+	sb.WriteString(lang)
 
 	// Dockerfileからイメージ作成
-	res, err := buildImage(ctx, cli, file, imageName)
+	res, err := buildImage(ctx, cli, file, sb.String())
 	check(err)
 	defer res.Body.Close()
 
@@ -50,7 +56,7 @@ func build(dfPath string) bool {
 	b, err := ioutil.ReadAll(res.Body)
 	check(err)
 	log.Println(*(*string)(unsafe.Pointer(&b)))
-	log.Printf("Build Image. Image's name is %v\n", imageName)
+	log.Printf("Build Image. Image's name is %v\n", sb.String())
 	return true
 }
 

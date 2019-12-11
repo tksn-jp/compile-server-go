@@ -12,8 +12,12 @@ import (
 )
 
 func BuildContainer(cli *client.Client, ctx context.Context, fileType string) (container.ContainerCreateCreatedBody, error) {
+	sb.Reset()
+	sb.Grow(32)
+	sb.WriteString("rcs_")
+	sb.WriteString(fileType)
 	res, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: "rcs_" + fileType,
+		Image: sb.String(),
 	}, nil, nil, "")
 	return res, err
 }

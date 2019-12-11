@@ -10,14 +10,6 @@ import (
 
 func main() {
 
-	//id, err := docker.BuildContainer("golang", "cl-golang")
-	//if err != nil {
-	//	if err != errors.New("") {
-	//		log.Fatal(err)
-	//	}
-	//}
-	//log.Printf("container builded: %s", id)
-	//docker.StartContainer(id)
 	log.Println("Building docker images...")
 	imageNum := docker.PrepareImage()
 
