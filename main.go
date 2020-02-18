@@ -14,11 +14,14 @@ func main() {
 	imageNum := docker.PrepareImage()
 
 	log.Printf("Image: %d\n", imageNum)
-	log.Println("server ready")
 
 	http.HandleFunc("/auth", auth.Login)
 	http.HandleFunc("/exec", Server)
 	http.HandleFunc("/ping", Ping)
 
-	log.Fatal(http.ListenAndServe(":8888", nil))
+	log.Println("server ready")
+
+	if err := http.ListenAndServe(":8887", nil); err != nil {
+		log.Fatal(err)
+	}
 }
