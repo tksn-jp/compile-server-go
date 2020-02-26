@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -12,6 +13,7 @@ import (
 )
 
 func BuildContainer(cli *client.Client, ctx context.Context, fileType string) (container.ContainerCreateCreatedBody, error) {
+	var sb strings.Builder
 	sb.Reset()
 	sb.Grow(32)
 	sb.WriteString("rcs_")

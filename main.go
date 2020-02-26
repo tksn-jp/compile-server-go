@@ -11,9 +11,9 @@ import (
 func main() {
 
 	log.Println("Building docker images...")
-	imageNum := docker.PrepareImage()
+	imageNum, success := docker.PrepareImage()
 
-	log.Printf("Image: %d\n", imageNum)
+	log.Printf("Image: %d / %d\n", success, imageNum)
 
 	http.HandleFunc("/auth", auth.Login)
 	http.HandleFunc("/exec", Server)
